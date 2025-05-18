@@ -1,0 +1,14 @@
+[project]
+name = "strands-agent-mcp"
+version = "0.1.0"
+description = "MCP for executing strands agents"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.3.4",
+    "strands-agents>=0.1.1",
+    "strands-agents-builder>=0.1.0",
+    "strands-agents-tools>=0.1.0",
+]
+[project.scripts]
+strands-agent-mcp = "strands_agent_mcp.server:mcp.run"
