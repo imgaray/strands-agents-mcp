@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
 [project]
 name = "strands-agent-mcp"
 version = "0.1.0"
@@ -10,5 +14,11 @@ dependencies = [
     "strands-agents-builder>=0.1.0",
     "strands-agents-tools>=0.1.0",
 ]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICEN[CS]E*"]
+
 [project.scripts]
 strands-agent-mcp = "strands_agent_mcp.server:mcp.run"
