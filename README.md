@@ -2,6 +2,10 @@
 
 A Model Context Protocol (MCP) server for executing Strands agents. This project provides a simple way to integrate Strands agents with Amazon Q and other MCP-compatible systems.
 
+<a href="https://glama.ai/mcp/servers/@imgaray/strands-agents-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@imgaray/strands-agents-mcp/badge" alt="Strands Agent MCP server" />
+</a>
+
 ## Overview
 
 Strands Agent MCP is a bridge between the Strands agent framework and the Model Context Protocol (MCP). It allows you to:
