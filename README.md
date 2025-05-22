@@ -6,20 +6,29 @@ A Model Context Protocol (MCP) server for executing Strands agents. This project
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@imgaray/strands-agents-mcp/badge" alt="Strands Agent MCP server" />
 </a>
 
+**IMPORTANT**: This project is currently in alpha stage and not yet published on PyPI.
+
 ## Overview
 
 Strands Agent MCP is a bridge between the Strands agent framework and the Model Context Protocol (MCP). It allows you to:
 
 - Register Strands agents as MCP tools
 - Execute Strands agents through MCP
-- Discover and list available agents
+- Find agents by specific skills
 
 The project uses a plugin architecture that makes it easy to add new agents without modifying the core code.
 
 ## Installation
 
+> Note: This package is not yet available on PyPI. You'll need to install it from source.
+
 ```bash
-pip install strands-agent-mcp
+# Clone the repository
+git clone https://github.com/yourusername/strands-agent-mcp.git
+cd strands-agent-mcp
+
+# Install the package
+pip install -e .
 ```
 
 ## Usage
@@ -30,80 +39,101 @@ pip install strands-agent-mcp
 strands-agent-mcp
 ```
 
-This will start the MCP server on the default port.
+This will start the MCP server.
+
+### Environment Variables
+
+The server supports the following environment variables:
+
+- `PLUGIN_PATH`: Custom path to look for plugins (default: ".")
+- `PLUGIN_NAMESPACE`: Custom namespace prefix for plugins (default: 'sap_mcp_plugin')
 
 ### Creating Agent Plugins
 
-To create a new agent plugin, create a Python package with a name that starts with `sap_mcp_plugin_` (sap stands for strands agent plugin). Your package should implement a `register_plugin` function that registers one or more agents with the provided registry:
+To create a new agent plugin, create a Python package with a name that starts with `sap_mcp_plugin_` (sap stands for strands agent plugin). Your package should implement a `build_agents` function that returns a list of `AgentEntry` objects:
 
 ```python
+from typing import List
+from boto3 import Session
 from strands import Agent
 from strands.models import BedrockModel
-from strands_agent_mcp.registry import Registry
 
-def register_plugin(registry: Registry) -> None:
-    registry.register("my-agent", Agent(
-        model=BedrockModel(boto_session=Session(region_name="us-west-2")))
-    )
+from strands_agent_mcp.registry import AgentEntry
+
+def build_agents() -> List[AgentEntry]:
+    return [
+        AgentEntry(
+            name="my-agent",
+            agent=Agent(
+                model=BedrockModel(boto_session=Session(region_name="us-west-2"))
+            ),
+            skills=["general-knowledge", "coding"]
+        )
+    ]
 ```
 
 ### Using with Amazon Q
 
-Once the MCP server is running, you can use the agents with Amazon Q:
+Once the MCP server is running, you can connect it to Amazon Q. Refer to the Amazon Q documentation for the correct connection parameters.
 
-```bash
-q chat --mcp-server http://localhost:8000
-```
+The following MCP tools will be available:
 
-Then you can use the following commands in your chat:
-
-- List available agents: `strands___list_agents`
-- Execute an agent: `strands___execute_agent` with parameters `agent` (agent name) and `prompt` (the prompt to send to the agent)
+- `execute_agent`: Execute an agent with parameters `agent_name` and `prompt`
+- `list_agents`: List all available agents
 
 ## Architecture
 
 The project consists of three main components:
 
 1. **Server**: The MCP server that exposes the agent execution API
-2. **Registry**: A simple registry for managing available agents
+2. **Registry**: A registry for managing available agents and their skills
 3. **Plugins**: Dynamically discovered modules that register agents with the registry
 
 The server automatically discovers all installed plugins that follow the naming convention and registers their agents.
 
 ## Dependencies
 
-- `fastmcp`: For implementing the MCP server
-- `strands-agents`: The core Strands agent framework
-- `strands-agents-builder`: Tools for building Strands agents
-- `strands-agents-tools`: Additional tools for Strands agents
+- `fastmcp>=2.3.4`: For implementing the MCP server
+- `strands-agents>=0.1.1`: The core Strands agent framework
+- `strands-agents-builder>=0.1.0`: Tools for building Strands agents
+- `strands-agents-tools>=0.1.0`: Additional tools for Strands agents
 
 ## Development
 
-To set up a development environment:
+This project uses [uv](https://github.com/astral-sh/uv) for dependency management. To set up a development environment:
 
 1. Clone the repository
-2. Create a virtual environment: `python -m venv .venv`
-3. Activate the virtual environment: `source .venv/bin/activate` (Linux/Mac) or `.venv\Scripts\activate` (Windows)
-4. Install development dependencies: `pip install -e ".[dev]"`
+2. Install uv if you don't have it already: `pip install uv`
+3. Create a virtual environment and install dependencies:
+   ```bash
+   uv venv
+   uv sync
+   ```
 
-## Creating a Test Plugin
+## Sample Plugin
 
-The repository includes a sample plugin (`sap_mcp_plugin_test`) that demonstrates how to create and register a simple agent called "simple-agent":
+The repository includes a sample plugin (`sap_mcp_plugin_simple`) that demonstrates how to create and register a simple agent:
 
 ```python
+from typing import List
 from boto3 import Session
 from strands import Agent
 from strands.models import BedrockModel
 
-from strands_agent_mcp.registry import Registry
+from strands_agent_mcp.registry import AgentEntry
 
-
-def register_plugin(registry: Registry) -> None:
-    registry.register("simple-agent", Agent(
-        model=BedrockModel(boto_session=Session(region_name="us-west-2")))
-    )
+def build_agents() -> List[AgentEntry]:
+    return [
+        AgentEntry(
+            name="simple-agent",
+            agent=Agent(
+                model=BedrockModel(boto_session=Session(region_name="us-west-2"))
+            ),
+            skills=["general-knowledge"]
+        )
+    ]
 ```
 
 ## License
 
-[Add license information here]
+This project is licensed under the terms of the LICENSE file included in the repository.

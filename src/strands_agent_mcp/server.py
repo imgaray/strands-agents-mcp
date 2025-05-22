@@ -46,7 +46,7 @@ def list_agents() -> List[str]:
     return [agent.name for agent in agent_registry.agent_entries]
 
 @mcp.tool(description="list all available skills for agents")
-def list_agents() -> List[str]:
+def list_skills() -> List[str]:
     """
     List all registered skills
     """
