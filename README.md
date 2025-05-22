@@ -2,7 +2,11 @@
 
 A Model Context Protocol (MCP) server for executing Strands agents. This project provides a simple way to integrate Strands agents with Amazon Q and other MCP-compatible systems.
 
-> **IMPORTANT**: This project is currently in alpha stage and not yet published on PyPI.
+<a href="https://glama.ai/mcp/servers/@imgaray/strands-agents-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@imgaray/strands-agents-mcp/badge" alt="Strands Agent MCP server" />
+</a>
+
+**IMPORTANT**: This project is currently in alpha stage and not yet published on PyPI.
 
 ## Overview
 
